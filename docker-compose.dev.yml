@@ -1,0 +1,20 @@
+name: blogging-app
+
+services:
+  nginx:
+    ports:
+      - '$CONTAINER_PORT:80'
+
+  node-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #   args:
+    #     - NODE_ENV=development
+    image: blog-app-dev
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    env_file: .env
+    # ports:
+    #   - '$CONTAINER_PORT:$PORT'

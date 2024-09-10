@@ -1,0 +1,102 @@
+// docker image
+build docker image (go to project directory path and run): docker build -t myimage:1.0 .
+    -t <image_name:vesrion> --> set your image tag with version
+
+list docker images: docker image ls
+remove docker image: docker rmi <image_name/vesrion>
+rename docker image: docker tag <old_image_name:vesrion> <new_image_name:vesrion>
+
+// docker container
+run docker image (make a container): docker run -d --rm --name "container_name" -p 3000:4000 <image_name/id>
+    -p <local_host_port|container_port>:<express_app_port> --> map localhost port (container port) to express app port
+        express app port is 4000 and container port is 3000,3001,.. so on
+    -d --> run container in detach mode and run in background
+    --rm --> delete container after stop/exit container
+    --name "container_name" --> set container name while run
+    -it --> run container in interactive mode (interactive terminal)
+    -v name_of_volume:WORKDIR_PATH/ --> mount volume to container (eg. -v myvolume:/myapp/)
+    --network <network_name> --> connect container's to network
+    --env --> to pass environment variable while run container (eg. docker run -d --env MYSQL_ROOT_PASSWORD="root" --name "mysqldb-c" mysql)
+    --env-file --> to pass environment variable from file while run container (eg. docker run -d --env-file ./.env --name "mysqldb-c" mysql)
+
+list running docker containers (process states): docker ps
+list all docker containers: docker ps -a
+stop running docker container: docker stop <container_id/name>
+delete a running docker container: docker rm <container_id/name> <container_id2/name2> ... -f
+    -f --> force delete
+    -fv --> force delete and delete volumes
+interact with container in terminal: docker exec -it <container_id/name> bash
+
+// docker logs
+show docker logs: docker logs <container_id/name>
+
+// docker volume
+list docker volumes: docker volume ls
+mount docker volume: docker run -d --rm --name "container_name" -p 3000:3000 -v <absolute_path_of_file_or_folder>:/myapp/<file_or_folder> <image_name/id>
+hack for absolute_path_of_file_or_folder
+    window commnand shell: -v %cd%:/myapp
+    window power shell: -v ${pwd}:/myapp
+    mac / linux: -v $(pwd):/myapp
+hack for node_modules vanish when using bind mount
+    -v /myapp/node_modules
+prevent docker container to overwrite files in bind mount by making it read only (:ro)
+    window commnand shell: -v %cd%:/myapp:ro
+
+// docker networking
+    for local database access: host = insted of localhost use host = host.docker.internal
+    create network: docker network create <network_name>
+    list networks: docker network ls
+    for access database in network: host = use database container name directly (eg. host = mongo )
+
+// docker compose
+    run: docker-compose up -d
+    shut down: docker-compose down -v (don't use -v if you don't want to remove/delete volume)
+    list: docker-compose ps
+    -d --> run container in detach mode and run in background
+    -v --> to remove volumes/network when stop/down
+    --build --> to re-build image and run
+    --no-deps [services_name] --> to not run dependant services when up container. only start perticular servives
+    -V --> to create new annonymose volume which install latest dependenices rather use old dependenices
+    --scale [service_name]=number --> to scale up service (node service)
+
+// two docker compose file diffrent environment
+    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+    docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+// docker container mongo shell connect
+    docker exec -it <mongo_container_name> mongosh -u <username> -p <password>
+    connection string: mongodb://blogs-db-user:blogs-user-pwd@localhost:64000/blogs-dc-db
+
+// docker container redis cli connect
+    docker exec -it <redis_container_name> redis-cli
+
+// push - pull image to docker hub
+push docker image: docker push <image_name:vesrion>
+    - create repository in docker hub (repo name will be your image name) (eg. karanranadocker/blogging-app)
+    - create same name image in docker hub (eg. karanranadocker/blogging-app:1.0)
+    - docker push karanranadocker/blogging-app:1.0
+
+pull docker image: docker pull <image_name:vesrion>
+
+Note: To Bebug app Making change/bug fixing - create a new image with diffrent tag and then make a container from that image
+
+
+// ================  disc free commnand =======================  //
+Remove images
+-> docker image prune
+-> docker image prune -a
+ 
+Remove all containers, images, networks, and volumes that are not currently in use.
+-> docker system prune
+ 
+Remove stopped containers
+-> docker ps -a
+-> docker container prune
+
+// Push to GitHub
+git init
+git add --all
+git commit -m "initial commit"
+git branch -M master
+git remote add origin https://github.com/KaranRana28/node-docker.git
+git push -u origin master

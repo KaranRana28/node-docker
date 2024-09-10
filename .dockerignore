@@ -1,0 +1,28 @@
+# ignore 3rd party lib
+node_modules
+
+# Docker files
+Dockerfile
+.dockerignore
+docker-compose*
+note-docker.txt
+
+# git files
+.git
+.gitignore
+
+# Add any directories, files, or patterns you don't want to be tracked by version control
+.templates
+
+# ignore logs
+logs
+*.log
+
+# Ignore built files
+build/**/*
+
+# ignore test converage
+coverage
+tests
+*.test.ts
+jest.config.js

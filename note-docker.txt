@@ -93,7 +93,7 @@ Remove stopped containers
 -> docker ps -a
 -> docker container prune
 
-// Push to GitHub
+// Push to GitHub Repo
 git init
 git add --all
 git commit -m "initial commit"
